@@ -33,7 +33,7 @@ import org.jsoup.select.Elements;
 
 public class crawling extends JFrame implements ActionListener{
 	static Calendar cal = Calendar.getInstance();
-	static int year = cal.get ( Calendar.YEAR );
+	static int year = cal.get ( cal.YEAR );
 
 	static String month;
 	static String date;
@@ -289,7 +289,6 @@ public class crawling extends JFrame implements ActionListener{
 			gsContent.add(content);
 			gsPrice.add(price);
 		}
-		System.out.println(gsTime);
 		gs.put("time", gsTime);
 		gs.put("category", gsCategory);
 		gs.put("price", gsPrice);
@@ -316,14 +315,17 @@ public class crawling extends JFrame implements ActionListener{
 		String address = "http://www.cjmall.com/etv/broad/broad_list_ajax.jsp?insert_date="+today;
 
 		Document doc = Jsoup.connect(address).get();
-		temp = doc.getElementsByClass("e_item");
-
+		temp = doc.select(".e_item");
 		for(int i = 0 ; i < temp.size() ; i++){
-			time = temp.get(i).getElementsByClass("viewGuest").get(0).getElementsByTag("strong").text();
-			category = temp.get(i).getElementsByClass("viewGuest").get(0).getElementsByTag("b").text().replace("...", "");
+			if(temp.get(i).select(".viewGuest").hasText()){
+				time = temp.get(i).select(".onair_info").get(0).select("strong").text();
+			}else{
+				time = "";
+			}
+			category = temp.get(i).select(".onair_info").get(0).getElementsByTag("b").text().replace("...", "");
 			price = temp.get(i).getElementsByClass("e_cost").text();
 			content = temp.get(i).getElementsByClass("e_copy").text();
-			if(i != 0 && time.equals(temp.get(i-1).getElementsByClass("viewGuest").get(0).getElementsByTag("strong").text())){
+			if(i != 0 && time.equals(temp.get(i-1).select(".onair_info").get(0).getElementsByTag("strong").text())){
 				cjTime.add("");
 			}else{
 				cjTime.add(time);
@@ -361,67 +363,54 @@ public class crawling extends JFrame implements ActionListener{
 
 		for(int i = 0 ; i < temp.size() ; i++){
 			time = temp.get(i).getElementsByClass("time").text();
-//			category = temp.get(i).getElementsByClass("viewGuest").get(0).getElementsByTag("b").text().replace("...", "");
+			//category = temp.get(i).getElementsByClass("viewGuest").get(0).getElementsByTag("b").text().replace("...", "");
 			content = temp.get(i).getElementsByClass("iptitle1").get(0).getElementsByTag("a").text();
 			price = temp.get(i).getElementsByClass("price").text();
 
 			lotteTime.add(time);
 			lottePrice.add(price);
-//			lotteCategory.add(category);
+			//lotteCategory.add(category);
 			lotteContent.add(content);
 		}
 		lotte.put("time", lotteTime);
 		lotte.put("price",lottePrice);
-//		lotte.put("category", lotteCategory);
 		lotte.put("content", lotteContent);
-
-		/*
-	 	String time = null;
-		String category = null;
-		String content = null;
-		String lotteDay = (Integer.parseInt(month) < 10 ? "0" + month : month)
-				+ "." + (Integer.parseInt(date) < 10 ? "0" + date : date);
-		String hi = null;
-
-		Elements temp = null;
-
-		HashMap<String, ArrayList<String>> lotte = new HashMap<String, ArrayList<String>>();
-		ArrayList<String> lotteTime = new ArrayList<String>();
-		ArrayList<String> lotteCategory = new ArrayList<String>();
-		ArrayList<String> lotteContent = new ArrayList<String>();
-
-		String address = "http://www.lotteimall.com/main/searchTvPgmByDay.lotte?bd_date=20140822";
-		Document doc = Jsoup.connect(address).get();
-		temp = doc.getElementsByClass("e_item");
-		System.out.println(doc);
-		for (int k = 0; k < 7; k++) {
-			hi = doc.getElementsByClass("new_schedule").get(0)
-					.getElementsByClass("day").get(k).text().replace("월", "")
-					.replace("화", "").replace("수", "").replace("목", "")
-					.replace("금", "").replace("토", "").replace("일", "")
-					.replace("TODAY", "").trim();
-			if (hi.equals(lotteDay)) {
-				temp = doc.getElementsByClass("new_schedule").get(0)
-						.getElementsByClass("day").get(k).parent()
-						.getElementsByTag("li");
-
-				for (int i = 0; i < temp.size(); i++) {
-					time = temp.get(i).getElementsByClass("time").text()
-							.replace("~", " ~ ");
-					category = temp.get(i).getElementsByTag("span").get(0)
-							.text();
-					content = temp.get(i).getElementsByClass("title").text();
-
-					lotteTime.add(time);
-					lotteCategory.add(category);
-					lotteContent.add(content);
-				}
-				lotte.put("time", lotteTime);
-				lotte.put("category", lotteCategory);
-				lotte.put("content", lotteContent);
-			}
-		}
-		*/
+		//		String time = null;
+		//		String category = null;
+		//		String content = null;
+		//		String lotteDay = (Integer.parseInt(month) < 10 ? "0"+ month : month) +"."+ (Integer.parseInt(date) < 10 ? "0" + date : date);
+		//		String hi = null;
+		//
+		//		Elements temp = null;
+		//
+		//		HashMap<String, ArrayList<String>> lotte = new HashMap<String, ArrayList<String>>();
+		//		ArrayList<String> lotteTime = new ArrayList<String>();
+		//		ArrayList<String> lotteCategory = new ArrayList<String>();
+		//		ArrayList<String> lotteContent = new ArrayList<String>();
+		//
+		//		String address = "http://www.lotteimall.com/main/searchTvPgmByDay.lotte?bd_date=20140822";
+		//		Document doc = Jsoup.connect(address).get();
+		//		temp = doc.getElementsByClass("e_item");
+		//		System.out.println(doc);
+		//		for(int k = 0 ; k < 7 ; k++){
+		//			hi = doc.getElementsByClass("new_schedule").get(0).getElementsByClass("day").get(k).text().replace("월", "").replace("화", "").replace("수", "").replace("목", "").replace("금", "").replace("토", "").replace("일", "").replace("TODAY", "").trim();
+		//			if(hi.equals(lotteDay)){
+		//				temp = doc.getElementsByClass("new_schedule").get(0).getElementsByClass("day").get(k).parent().getElementsByTag("li");
+		//
+		//				for(int i = 0 ; i < temp.size() ; i++){
+		//					time = temp.get(i).getElementsByClass("time").text().replace("~", " ~ ");
+		//					category = temp.get(i).getElementsByTag("span").get(0).text();
+		//					content = temp.get(i).getElementsByClass("title").text();
+		//
+		//					lotteTime.add(time);
+		//					lotteCategory.add(category);
+		//					lotteContent.add(content);
+		//				}
+		//				lotte.put("time", lotteTime);
+		//				lotte.put("category",lotteCategory);
+		//				lotte.put("content", lotteContent);
+		//			}
+		//		}
 
 		return lotte;
 	}
