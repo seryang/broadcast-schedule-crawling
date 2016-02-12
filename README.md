@@ -6,7 +6,7 @@ HomeShopping(GS / CJ / Lotte) broadcast schedule crawler
 
 > Project Member
 
-- Choe seryang
+- Choe Seryang
 
 > Portfolio
 
