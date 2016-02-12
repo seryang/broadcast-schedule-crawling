@@ -1,4 +1,4 @@
-Broadcast schedule crawler
+HomeShopping(GS / CJ / Lotte) broadcast schedule crawler
 
 > Use skill
 
